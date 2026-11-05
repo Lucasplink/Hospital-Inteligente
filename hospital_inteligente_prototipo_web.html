@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Inteligente - Seu Assistente de Saúde</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-emerald-50/40 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col">
+
+  <!-- HEADER & NAVBAR -->
+  <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-emerald-100 dark:border-slate-700 shadow-sm transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- LOGO -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
+        <div class="bg-emerald-500 dark:bg-emerald-600 p-2.5 rounded-2xl text-white shadow-md shadow-emerald-500/20 flex items-center justify-center">
+          <i data-lucide="cross" class="w-7 h-7 stroke-[2.5]"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+            HOSPITAL <span class="text-emerald-600 dark:text-emerald-400 font-extrabold">INTELIGENTE</span>
+          </h1>
+          <p class="text-xs font-medium text-emerald-700/70 dark:text-emerald-400/80">Saúde & Triagem em Tempo Real</p>
+        </div>
+      </div>
+
+      <!-- DESKTOP NAV -->
+      <nav class="hidden md:flex items-center space-x-1 bg-emerald-100/50 dark:bg-slate-700/50 p-1.5 rounded-full border border-emerald-200/50 dark:border-slate-600">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 bg-emerald-600 text-white shadow-sm">
+          <i data-lucide="layout-dashboard" class="w-4 h-4 inline mr-1.5"></i> Início
+        </button>
+        <button onclick="switchTab('hospitals')" id="nav-hospitals" class="nav-btn px-5 py-2 rounded-full text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 transition-all">
+          <i data-lucide="map-pin" class="w-4 h-4 inline mr-1.5"></i> Rede de Saúde
+        </button>
+        <button onclick="switchTab('ai-triage')" id="nav-ai-triage" class="nav-btn px-5 py-2 rounded-full text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 transition-all">
+          <i data-lucide="bot" class="w-4 h-4 inline mr-1.5"></i> IA Triagem
+        </button>
+      </nav>
+
+      <!-- CONTROLS & SOS BUTTON -->
+      <div class="flex items-center space-x-3">
+        <!-- DARK MODE TOGGLE -->
+        <button id="theme-toggle" onclick="toggleDarkMode()" title="Alternar Tema" class="p-2.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:bg-emerald-100 dark:hover:bg-slate-600 transition">
+          <i data-lucide="moon" id="theme-icon-moon" class="w-5 h-5 hidden"></i>
+          <i data-lucide="sun" id="theme-icon-sun" class="w-5 h-5"></i>
+        </button>
+
+        <!-- SOS EMERGENCY TRIGGER BUTTON -->
+        <button onclick="openSosModal()" class="sos-pulse bg-red-600 hover:bg-red-700 text-white px-4 py-2.5 rounded-full font-bold shadow-lg shadow-red-500/30 flex items-center gap-2 text-sm sm:text-base border-2 border-red-400/50 transition">
+          <i data-lucide="phone-call" class="w-5 h-5 animate-bounce"></i>
+          <span>SOS <span class="hidden sm:inline">EMERGÊNCIA</span></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+    <!-- TAB 1: DASHBOARD / OVERVIEW -->
+    <section id="tab-dashboard" class="tab-content space-y-6">
+      
+      <!-- HERO WELCOME BANNER -->
+      <div class="bg-gradient-to-r from-emerald-600 to-teal-700 dark:from-emerald-800 dark:to-slate-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+          <i data-lucide="activity" class="w-96 h-96"></i>
+        </div>
+        <div class="max-w-2xl relative z-10 space-y-3">
+          <span class="inline-flex items-center gap-1.5 bg-emerald-500/30 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-emerald-100 border border-emerald-400/30">
+            <i data-lucide="navigation" class="w-3.5 h-3.5"></i> GPS Ativo • Localização Detectada
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Atendimento Inteligente e Direcionado</h2>
+          <p class="text-emerald-100 text-sm sm:text-base leading-relaxed">
+            Sua saúde não pode esperar. Use nossa IA treinada para triagem rápida de machucados e sintomas, ou encontre a unidade de saúde adequada mais próxima de você.
+          </p>
+          <div class="pt-2 flex flex-wrap gap-3">
+            <button onclick="switchTab('ai-triage')" class="bg-white text-emerald-800 hover:bg-emerald-50 px-5 py-2.5 rounded-xl font-bold text-sm shadow-md transition flex items-center gap-2">
+              <i data-lucide="bot" class="w-4 h-4 text-emerald-600"></i> Iniciar Triagem Virtual
+            </button>
+            <button onclick="switchTab('hospitals')" class="bg-emerald-700/60 hover:bg-emerald-700 text-white border border-emerald-400/40 px-5 py-2.5 rounded-xl font-semibold text-sm transition flex items-center gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4"></i> Ver Postos & Hospitais
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTION CARDS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- CARD 1: SOS -->
+        <div onclick="openSosModal()" class="cursor-pointer bg-white dark:bg-slate-800 p-5 rounded-2xl border-2 border-red-100 dark:border-red-900/40 hover:border-red-500 dark:hover:border-red-500 shadow-sm hover:shadow-md transition group">
+          <div class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+            <i data-lucide="siren" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 dark:text-white group-hover:text-red-600 transition">Emergência (192 / 190)</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Acione socorro urgente para casos graves com risco de vida.</p>
+        </div>
+
+        <!-- CARD 2: IA TRIAGEM -->
+        <div onclick="switchTab('ai-triage')" class="cursor-pointer bg-white dark:bg-slate-800 p-5 rounded-2xl border border-emerald-100 dark:border-slate-700 hover:border-emerald-500 shadow-sm hover:shadow-md transition group">
+          <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+            <i data-lucide="bot" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 transition">Assistente IA de Triagem</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Descreva seu ferimento para saber o local correto de atendimento.</p>
+        </div>
+
+        <!-- CARD 3: POSTOS UBS -->
+        <div onclick="filterHospitalsTab('UBS')" class="cursor-pointer bg-white dark:bg-slate-800 p-5 rounded-2xl border border-emerald-100 dark:border-slate-700 hover:border-emerald-500 shadow-sm hover:shadow-md transition group">
+          <div class="w-12 h-12 rounded-xl bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+            <i data-lucide="building-2" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 dark:text-white group-hover:text-teal-600 transition">Postos de Saúde (UBS)</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Casos leves, trocas de curativo, vacinas e consultas básicas.</p>
+        </div>
+
+        <!-- CARD 4: UPAS & HOSPITAIIS -->
+        <div onclick="filterHospitalsTab('Hospital')" class="cursor-pointer bg-white dark:bg-slate-800 p-5 rounded-2xl border border-emerald-100 dark:border-slate-700 hover:border-emerald-500 shadow-sm hover:shadow-md transition group">
+          <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+            <i data-lucide="hospital" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition">UPAs & Hospitais</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Urgências 24h, fraturas, exames complexos e internações.</p>
+        </div>
+
+      </div>
+
+      <!-- NEARBY UNITS QUICK LIST -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- MAP SIMULATION DISPLAY -->
+        <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-3xl p-5 border border-emerald-100 dark:border-slate-700 shadow-sm flex flex-col">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <i data-lucide="map" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i> Radar GPS de Saúde Próximo
+            </h3>
+            <span class="text-xs bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Live GPS
+            </span>
+          </div>
+          
+          <!-- MAP CANVAS SIMULATION -->
+          <div class="relative w-full h-80 bg-slate-200 dark:bg-slate-950 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+            
+            <!-- MAP GRID BACKGROUND STYLING -->
+            <div class="absolute inset-0 opacity-30 dark:opacity-20 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            
+            <!-- SIMULATED MAP ROADS -->
+            <div class="absolute w-full h-12 bg-slate-300/60 dark:bg-slate-800/60 top-1/2 -translate-y-1/2 rotate-12"></div>
+            <div class="absolute h-full w-12 bg-slate-300/60 dark:bg-slate-800/60 left-1/2 -translate-x-1/2 -rotate-12"></div>
+            
+            <!-- USER PIN (CENTER) -->
+            <div class="absolute z-20 flex flex-col items-center">
+              <div class="relative">
+                <span class="absolute -inset-2 rounded-full bg-blue-500/30 animate-ping"></span>
+                <div class="w-8 h-8 rounded-full bg-blue-600 border-2 border-white text-white flex items-center justify-center shadow-lg">
+                  <i data-lucide="navigation-2" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <span class="bg-slate-900/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mt-1 backdrop-blur-sm">Você está aqui</span>
+            </div>
+
+            <!-- DYNAMIC MAP PINS -->
+            <div id="map-pins-container">
+              <!-- Inserted via JS -->
+            </div>
+
+            <div class="absolute bottom-3 left-3 right-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300 flex justify-between items-center">
+              <span><i data-lucide="compass" class="w-3.5 h-3.5 inline mr-1 text-emerald-600"></i> Raio de busca: <strong>5.0 km</strong></span>
+              <button onclick="switchTab('hospitals')" class="text-emerald-600 dark:text-emerald-400 font-bold hover:underline">Ver Lista Completa →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOP RECOMMENDED UNITS WIDGET -->
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 border border-emerald-100 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white">Mais Próximos</h3>
+              <a onclick="switchTab('hospitals')" class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold cursor-pointer hover:underline">Ver Todos</a>
+            </div>
+            
+            <div id="dashboard-units-list" class="space-y-3">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700/60 bg-emerald-50/50 dark:bg-slate-800/50 p-3 rounded-xl">
+            <p class="text-xs text-emerald-800 dark:text-emerald-300 font-medium flex items-start gap-2">
+              <i data-lucide="info" class="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5"></i>
+              <span>Dúvida sobre para onde ir? Deixe nossa IA analisar seus sintomas primeiro.</span>
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- TAB 2: HOSPITALS / UBS DIRECTORY & GPS -->
+    <section id="tab-hospitals" class="tab-content hidden space-y-6">
+      
+      <!-- TITLE & SEARCH BAR -->
+      <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-emerald-100 dark:border-slate-700 shadow-sm space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Rede de Saúde Mais Próxima</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Postos de Saúde (UBS), Unidades de Pronto Atendimento (UPA) e Hospitais via GPS.</p>
+          </div>
+          
+          <!-- SEARCH & FILTER CONTROLS -->
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative flex-1 sm:w-64">
+              <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+              <input type="text" id="search-input" oninput="renderHospitalsList()" placeholder="Buscar por nome ou bairro..." class="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white">
+            </div>
+          </div>
+        </div>
+
+        <!-- FILTER CATEGORY BUTTONS -->
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+          <button onclick="setFilter('ALL')" id="filter-ALL" class="filter-btn px-4 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 text-white shadow-sm transition">
+            Todos (5)
+          </button>
+          <button onclick="setFilter('UBS')" id="filter-UBS" class="filter-btn px-4 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-emerald-100 transition">
+            <i data-lucide="building-2" class="w-3.5 h-3.5 inline mr-1"></i> Postos de Saúde (UBS)
+          </button>
+          <button onclick="setFilter('UPA')" id="filter-UPA" class="filter-btn px-4 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-emerald-100 transition">
+            <i data-lucide="zap" class="w-3.5 h-3.5 inline mr-1"></i> UPAs 24h
+          </button>
+          <button onclick="setFilter('Hospital')" id="filter-Hospital" class="filter-btn px-4 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-emerald-100 transition">
+            <i data-lucide="hospital" class="w-3.5 h-3.5 inline mr-1"></i> Hospitais Gerais
+          </button>
+        </div>
+      </div>
+
+      <!-- HOSPITALS GRID -->
+      <div id="hospitals-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Dynamic Cards Inserted Here -->
+      </div>
+
+    </section>
+
+    <!-- TAB 3: AI TRIAGE ASSISTANT CHAT -->
+    <section id="tab-ai-triage" class="tab-content hidden max-w-4xl mx-auto space-y-4">
+      
+      <!-- CHAT HEADER CARD -->
+      <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-emerald-100 dark:border-slate-700 shadow-sm flex items-center justify-between">
+        <div class="flex items-center space-x-3.5">
+          <div class="relative">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white flex items-center justify-center shadow-md">
+              <i data-lucide="bot" class="w-7 h-7"></i>
+            </div>
+            <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-slate-800 rounded-full"></span>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              Assistente de Triagem IA
+              <span class="text-[10px] bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-full uppercase font-extrabold tracking-wider">Treinada</span>
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Guia de orientação inicial sobre qual hospital procurar</p>
+          </div>
+        </div>
+
+        <button onclick="resetChat()" class="text-xs text-slate-500 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-400 flex items-center gap-1 font-medium transition">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reiniciar Chat
+        </button>
+      </div>
+
+      <!-- CHAT MESSAGES WINDOW -->
+      <div class="bg-white dark:bg-slate-800 rounded-3xl border border-emerald-100 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col h-[520px]">
+        
+        <!-- MESSAGES CONTAINER -->
+        <div id="chat-messages" class="flex-1 p-5 overflow-y-auto space-y-4 custom-scrollbar bg-slate-50/50 dark:bg-slate-900/50">
+          
+          <!-- INITIAL BOT GREETING -->
+          <div class="flex gap-3 max-w-[85%]">
+            <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold shadow-sm">
+              <i data-lucide="bot" class="w-4 h-4"></i>
+            </div>
+            <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl rounded-tl-none shadow-sm text-sm space-y-2 text-slate-800 dark:text-slate-200">
+              <p>Olá! Sou a <strong>IA de Triagem do Hospital Inteligente</strong>. 🏥🤖</p>
+              <p>Estou aqui para te orientar sobre a melhor opção de atendimento (UBS, UPA ou Hospital) dependendo da sua situação.</p>
+              <p class="font-semibold text-emerald-700 dark:text-emerald-400">Como você se machucou ou o que está sentindo agora?</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- QUICK SUGGESTION CHIPS -->
+        <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700/60 overflow-x-auto">
+          <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Exemplos rápidos de consulta:</p>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="sendQuickMessage('Cortei o dedo cozinhando, é leve mas precisa de curativo')" class="text-xs bg-emerald-50 dark:bg-slate-700 hover:bg-emerald-100 text-emerald-800 dark:text-emerald-300 border border-emerald-200/60 dark:border-slate-600 px-3 py-1.5 rounded-full transition">
+              🩹 Corte leve no dedo
+            </button>
+            <button onclick="sendQuickMessage('Estou com febre alta e dor forte no peito com falta de ar')" class="text-xs bg-red-50 dark:bg-red-950/40 hover:bg-red-100 text-red-800 dark:text-red-300 border border-red-200/60 dark:border-red-800 px-3 py-1.5 rounded-full transition">
+              🚨 Dor forte no peito e falta de ar
+            </button>
+            <button onclick="sendQuickMessage('Sinto dor de cabeça leve e garganta arranhando há 2 dias')" class="text-xs bg-emerald-50 dark:bg-slate-700 hover:bg-emerald-100 text-emerald-800 dark:text-emerald-300 border border-emerald-200/60 dark:border-slate-600 px-3 py-1.5 rounded-full transition">
+              🤒 Gripe / Dor de cabeça leve
+            </button>
+            <button onclick="sendQuickMessage('Caí da escada e meu tornozelo está muito inchado e não consigo pisar')" class="text-xs bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800 px-3 py-1.5 rounded-full transition">
+              🦴 Tornozelo inchado / Suspeita de fratura
+            </button>
+          </div>
+        </div>
+
+        <!-- CHAT INPUT FORM -->
+        <form onsubmit="handleUserSubmit(event)" class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center gap-2">
+          <input type="text" id="chat-input" placeholder="Descreva seu machucado ou sintoma aqui..." class="flex-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:text-white">
+          <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white p-3 rounded-2xl shadow-md transition flex items-center justify-center">
+            <i data-lucide="send" class="w-5 h-5"></i>
+          </button>
+        </form>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL: SOS EMERGENCY CALL -->
+  <div id="sos-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-opacity">
+    <div class="bg-white dark:bg-slate-800 max-w-md w-full rounded-3xl p-6 shadow-2xl border-2 border-red-500/30 text-center relative animate-in fade-in zoom-in duration-200">
+      
+      <button onclick="closeSosModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+
+      <div class="w-20 h-20 bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mx-auto mb-4 sos-pulse">
+        <i data-lucide="siren" class="w-10 h-10"></i>
+      </div>
+
+      <h3 class="text-2xl font-black text-slate-900 dark:text-white">CENTRAL DE EMERGÊNCIA</h3>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">
+        Você está em um caso grave com risco imediato de vida? Clique para iniciar a ligação.
+      </p>
+
+      <div class="mt-6 space-y-3">
+        <!-- SAMU BUTTON -->
+        <a href="tel:192" onclick="simulateCall('SAMU 192')" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg shadow-red-600/30 flex items-center justify-center gap-3 text-lg transition">
+          <i data-lucide="phone-call" class="w-6 h-6"></i>
+          <span>Ligar para <strong>192 (SAMU)</strong></span>
+        </a>
+
+        <!-- POLICE BUTTON -->
+        <a href="tel:190" onclick="simulateCall('Polícia 190')" class="w-full bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold py-3.5 px-4 rounded-2xl flex items-center justify-center gap-3 text-base transition">
+          <i data-lucide="shield-alert" class="w-5 h-5 text-amber-400"></i>
+          <span>Ligar para <strong>190 (Polícia)</strong></span>
+        </a>
+      </div>
+
+      <p class="text-xs text-slate-400 dark:text-slate-500 mt-5">
+        * Se você puder caminhar e o machucado for leve, recomendamos utilizar nossa triagem via IA.
+      </p>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <script src="DataBS.js"></script>
+  <script src="FunctionRender.js"></script>
+  <script src="IAsim.js"></script>
+  <script src="Teleconsulta.js"></script>
+</body>
+</html>
